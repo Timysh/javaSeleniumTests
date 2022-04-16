@@ -1,0 +1,166 @@
+apply plugin: 'java'
+
+repositories.mavenCentral()
+
+dependencies {
+    implementation 'org.testng:testng:7.4.0'
+    implementation 'org.seleniumhq.selenium:selenium-java:4.0.0-beta-3'
+    implementation 'org.hamcrest:hamcrest:2.2'
+    implementation 'com.beust:jcommander:1.81'
+    implementation 'com.thoughtworks.xstream:xstream:1.4.17'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.github.javafaker:javafaker:1.0.2'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'mysql:mysql-connector-java:8.0.25'
+    implementation 'org.hibernate:hibernate-core:5.4.31.Final'
+}
+
+/**
+ * Test Suites
+ */
+task testGroups(type: Test) {
+    useTestNG {
+        suites 'src/test/resources/testngSuites/testng-groups.xml'
+    }
+    if (project.hasProperty('browser')) {
+        systemProperty 'browser', "${browser}"
+    }
+    if (project.hasProperty('platform')) {
+        systemProperty 'platform', "${platform}"
+    }
+    if (project.hasProperty('target')) {
+        systemProperty 'target', "${target}"
+    }
+}
+
+task testGroupsFromFiles(type: Test) {
+    useTestNG {
+        suites 'src/test/resources/testngSuites/testng-groups-fromFiles.xml'
+    }
+    if (project.hasProperty('browser')) {
+        systemProperty 'browser', "${browser}"
+    }
+        if (project.hasProperty('platform')) {
+        systemProperty 'platform', "${platform}"
+    }
+    if (project.hasProperty('target')) {
+        systemProperty 'target', "${target}"
+    }
+    if (project.hasProperty('numGroups')) {
+        systemProperty 'numGroups', "${numGroups}"
+    }
+}
+
+
+task dbTestGroups(type: Test) {
+    useTestNG {
+        suites 'src/test/resources/testngSuites/testng-groups-DBtests.xml'
+    }
+    if (project.hasProperty('browser')) {
+        systemProperty 'browser', "${browser}"
+    }
+    if (project.hasProperty('platform')) {
+        systemProperty 'platform', "${platform}"
+    }
+    if (project.hasProperty('target')) {
+        systemProperty 'target', "${target}"
+    }
+    if (project.hasProperty('verifyUI')) {
+        systemProperty 'verifyUI', "${verifyUI}"
+    }
+}
+
+
+task testContacts(type: Test) {
+    useTestNG {
+        suites 'src/test/resources/testngSuites/testng-contacts.xml'
+    }
+    if (project.hasProperty('browser')) {
+        systemProperty 'browser', "${browser}"
+    }
+    if (project.hasProperty('platform')) {
+        systemProperty 'platform', "${platform}"
+    }
+    if (project.hasProperty('target')) {
+        systemProperty 'target', "${target}"
+    }
+}
+
+task testAllBase(type: Test) {
+    useTestNG {
+        suites 'src/test/resources/testngSuites/testngBaseCommon.xml'
+    }
+    if (project.hasProperty('browser')) {
+        systemProperty 'browser', "${browser}"
+    }
+    if (project.hasProperty('platform')) {
+        systemProperty 'platform', "${platform}"
+    }
+    if (project.hasProperty('target')) {
+        systemProperty 'target', "${target}"
+    }
+}
+
+task testContactsFromFiles(type: Test) {
+    useTestNG {
+        suites 'src/test/resources/testngSuites/testng-contacts-fromFiles.xml'
+    }
+    if (project.hasProperty('browser')) {
+        systemProperty 'browser', "${browser}"
+    }
+    if (project.hasProperty('platform')) {
+        systemProperty 'platform', "${platform}"
+    }
+    if (project.hasProperty('target')) {
+        systemProperty 'target', "${target}"
+    }
+    if (project.hasProperty('numContacts')) {
+        systemProperty 'numContacts', "${numContacts}"
+    }
+}
+
+task dbTestContacts(type: Test) {
+    useTestNG {
+        suites 'src/test/resources/testngSuites/testng-contacts-DBtests.xml'
+    }
+    if (project.hasProperty('browser')) {
+        systemProperty 'browser', "${browser}"
+    }
+    if (project.hasProperty('platform')) {
+        systemProperty 'platform', "${platform}"
+    }
+    if (project.hasProperty('target')) {
+        systemProperty 'target', "${target}"
+    }
+    if (project.hasProperty('verifyUI')) {
+        systemProperty 'verifyUI', "${verifyUI}"
+    }
+}
+
+/**
+ * Setting encoding during compilation in Java and Test classes
+ */
+tasks.withType(JavaCompile) { options.encoding = "UTF-8" }
+tasks.withType(Test) { systemProperty "file.encoding", "UTF-8" }
+
+/**
+ * Allure settings
+ */
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "io.qameta.allure:allure-gradle:2.8.1"
+    }
+}
+
+apply plugin: 'io.qameta.allure'
+
+allure {
+    version = '2.13.6'
+    autoconfigure = true
+    aspectjVersion = '1.9.6'
+    aspectjweaver = false
+    allureJavaVersion = '2.13.6'
+}
